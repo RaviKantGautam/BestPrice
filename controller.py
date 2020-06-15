@@ -1297,3 +1297,6 @@ def sendpassadmin(request):
         print(response.read())
         return HttpResponse('success')
 
+def demo(request):
+    return render(request,'demo.html')
+

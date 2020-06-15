@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function viewstock(storeid) {
+            var cname=document.getElementById('categoryname').value;
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+                var s = "";
+            if(ar.length==0){
+                s+="<h2>Stock is not available under this category and selected store</h2>";
+            }
+            else{
+                 s += "<table class='table table-bordered'>";
+            s += "<th>Stock ID</th>";
+            s += "<th>Product ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>Quantity</th>";
+            s += "<th>Store ID</th>";
+            s += "<th>DateOfPurchase</th>";
+            s += "<th>ExpiryDate</th>";
+            {#s += "<th colspan='2'>Controls</th>";#}
+
+            for (var i = 0; i < ar.length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[i]['stockid'] + "</td>";
+                s += "<td>" + ar[i]['productid'] + "</td>";
+                  s += "<td>" + ar[i]['productname'] + "</td>";
+                    s += "<td>" + ar[i]['quantity'] + "</td>";
+                      s += "<td>" + ar[i]['storeid'] + "</td>";
+                        s += "<td>" + ar[i]['dateofpurchase'] + "</td>";
+                          s += "<td>" + ar[i]['dateofexpiry'] + "</td>";
+                // s += "<td><a href=''><span class='glyphicon glyphicon-pencil'></span></a></td>";
+                // s += "<td class='text-center'><a href=''><img src='../static/edit.png' style='width:20px;height:20px;'></a></td>";
+                // s += "<td><a href='deletecategoryaction?cname="+ar[i]['cname']+"'><span class='glyphicon glyphicon-trash' style='color:red;'></span></a></td>";
+                {#s += "<td class='text-center'><a href='deletecategoryaction?cname=" + ar[i]['cname'] + "'><img src='../static/delete.png' style='width:20px;height:20px;'></a></td>";#}
+                s += "</tr>";
+            }
+
+            s += "</table>";
+            }
+            document.getElementById('output').innerHTML = s;
+        }
+    };
+    xml.open('GET', 'viewadminstockaction?cname='+cname+"&storeid="+storeid, true);
+    xml.send();
+}
+
+    </script>
+</head>
+{% include 'adminheader.html' %}
+<body >
+<div class="container">
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">View Stock</h1>
+    </div>
+</div>
+
+      <div class="row">
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <select  id="categoryname" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Category">
+                    <option value="">Choose</option>
+                        {% for p in mydata.0 %}
+                            <option value="{{ p.categoryname }}">{{ p.categoryname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+ <div class="row">
+                <div class="form-group">
+                    <label>Select Store</label>
+                    <select  id="storeid" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Store" onchange="viewstock(this.value)">
+                    <option value="">Choose</option>
+                        {% for p in mydata.1 %}
+                            <option value="{{ p.storeid }}">{{ p.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+<div id="output"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <title>Shop Now</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+    <script>
+        function gotomainwebsite() {
+            window.location.href='/';
+        }
+         function gotoshopnow() {
+            window.location.href='memberhomepage';
+        }
+
+        function msg() {
+            var ans=confirm('cart is empty. Want to shop now?');
+            if (ans==true){
+                window.location.href='openuserdashboard';
+            }
+        }
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<button onclick="gotomainwebsite()" style="background-color: white" class="btn btn-default">Online Shopping</button>&nbsp;
+  <form class="form-inline" action="#">
+      {% if request.session.page == 'userdashboard' %}
+              <select name="categoryname" id="categoryname" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Category" onchange="fetchproducts(this.value)">
+                    <option value="">Choose Store</option>
+                        {% for p in mydata %}
+                            <option value="{{ p.storeid }}">{{ p.title }}</option>
+                        {% endfor %}
+                    </select>
+      {% endif  %}
+     {% if request.session.page != 'userdashboard' %}
+           <input type="button" value="Shop Now" onclick="gotoshopnow()" style="background-color: white" class="btn btn-default">Shop Now</input>&nbsp;
+      {% endif  %}
+
+
+
+  </form>&nbsp;&nbsp;
+{%  if request.session.cartsize == null %}
+     <a  onclick="msg()"  style="background-color: white">
+          <img src="{% static 'media/shopping_cart_full.png' %}" width="40" height="30">
+        0</a>
+    {% endif %}
+{%  if request.session.cartsize != null %}
+     <a  href="viewcart"  style="background-color: white">
+          <img src="{% static 'media/shopping_cart_full.png' %}" width="40" height="30">
+        {{ request.session.cartsize }}</a>
+    {% endif %}
+&nbsp;&nbsp;
+    <button class="btn btn-info" onclick="vieworders()">View Orders</button>
+    <li><a class="btn btn-info" href="openmemberchangepass">Change Password</a></li>
+      <li><a class="btn btn-info" href="memberlogout">Logout</a></li>&nbsp;
+{%  if request.session.MEMBERID != null %}
+     <li class="btn btn-info">MEMBER LOGGED IN  :{{ request.session.MEMBERNAME }}  ID:{{ request.session.MEMBERID }}</li>
+{% endif %}
+</nav>
+<br>
+
+<div class="container">
+{#  <h3>Navbar Forms</h3>#}
+{#  <p>Use the .form-inline class to align form elements side by side inside the navbar.</p>#}
+
+</div>
+
+</body>
+</html>

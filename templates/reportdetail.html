@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+{% include 'storeheader.html' %}
+<div class="container">
+    <div class="page-header text-center">
+<h1>Order Detail</h1>
+    </div>
+    <div style="margin: 10px;">
+<table class="table table-bordered table-hover">
+<tr><th>Serial No</th><th>Detail Id</th><th>Pid</th><th>Name</th><th>Brand</th><th>Category</th><th>Price</th><th>Quantity</th><th>Total</th><th>BillId</th></tr>
+    {%  for d in data.0 %}
+<tr><td>{{ d.serialno }}</td><td>{{ d.detailid }}</td><td>{{ d.pid }}</td><td>{{ d.pname }}</td><td>{{ d.brand }}</td><td>{{ d.cname }}</td><td>Rs. {{ d.price }}</td><td>{{ d.qty }}</td><td>Rs. {{ d.total }}</td><td>{{ d.billid }}</td></tr>
+    {% endfor %}
+</table>
+    <div class="text-center">
+        <h3>Total Bill Rs.{{ data.1 }}</h3>
+    </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function addstore() {
+    var title = document.getElementById('title').value;
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var location = document.getElementById('location').value;
+    var mobile = document.getElementById('mobile').value;
+    if(title==""){
+        alert('enter title');
+    }
+    else if(email==""){
+        alert('enter email');
+    }
+    else if(password==""){
+        alert('enter password');
+    }
+    else if(location==""){
+        alert('enter location');
+    }
+    else if(mobile==""){
+        alert('enter mobile');
+    }
+    else if(mobile.length!=10){
+        alert('mobile must be of 10 digits and in numeric')
+    }
+    else {
+        var xml = new XMLHttpRequest();
+        xml.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var ar = JSON.parse(this.response);
+                document.getElementById('sp1').innerHTML = ar['message'];
+            }
+        };
+        xml.open('GET', 'addstoreaction?title=' + title + '&email=' + email + '&password=' + password + '&location=' + location + '&mobile=' + mobile, true);
+        xml.send();
+    }
+}
+    </script>
+</head>
+<body>
+{% include 'adminheader.html' %}
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">Add Store</h1>
+        <div class="row">
+            <div class="form-group">
+                <label>Enter Store Title</label>
+                <input type="text" id="title" placeholder="enter store title" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Enter Store Email</label>
+                <input type="email" id="email" placeholder="enter email in format abc@gmail.com" class="form-control" required>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Choose Store Password</label>
+                <input type="password" id="password" placeholder="choose password" class="form-control" required>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Enter Store Location</label>
+                <input type="text" id="location" placeholder="enter store location" class="form-control" required>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Enter Store MobileNumber</label>
+                <input type="tel" id="mobile" placeholder="enter 10 digit mobile (must be numeric)" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <input type="button" class="btn btn-success" onclick="addstore()" value="SUBMIT">
+            </div>
+        </div>
+        <span id="sp1"></span>
+    </div>
+</div>
+</body>
+</html>

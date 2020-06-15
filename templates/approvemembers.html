@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function viewmembers(storeid) {
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+            var s = "";
+            s+="<h2>Pending Members</h2>";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Member ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>POC</th>";
+            s += "<th>Mobile</th>";
+            s += "<th>Email</th>";
+            s += "<th>AddOnCardName1</th>";
+            s += "<th>AddOnCardName2</th>";
+            s += "<th>AddOnCardName3</th>";
+            s += "<th>ParentStore</th>";
+            s += "<th>Status</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+            for (var i = 0; i < ar[0].length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[0][i]['memberid'] + "</td>";
+                s += "<td>" + ar[0][i]['name'] + "</td>";
+                  s += "<td>" + ar[0][i]['poc'] + "</td>";
+                    s += "<td>" + ar[0][i]['mobile'] + "</td>";
+                      s += "<td>" + ar[0][i]['email'] + "</td>";
+                        s += "<td>" + ar[0][i]['cardname1'] + "</td>";
+                               s += "<td>" + ar[0][i]['cardname2'] + "</td>";
+                                      s += "<td>" + ar[0][i]['cardname3'] + "</td>";
+                                             s += "<td>" + ar[0][i]['parentstore'] + "</td>";
+                                                    s += "<td>" + ar[0][i]['status'] + "</td>";
+
+                // s += "<td><a href=''><span class='glyphicon glyphicon-pencil'></span></a></td>";
+                // s += "<td class='text-center'><a href=''><img src='../static/edit.png' style='width:20px;height:20px;'></a></td>";
+                // s += "<td><a href='deletecategoryaction?cname="+ar[i]['cname']+"'><span class='glyphicon glyphicon-trash' style='color:red;'></span></a></td>";
+                s += "<td class='text-center'><a href='memberstatuschange?memberid=" + ar[0][i]['memberid'] + "&opr=approve'>Approve</a></td>";
+                s += "</tr>";
+            }
+
+            s += "</table>";
+
+             s+="<h2>Already Approved Members</h2>";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Member ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>POC</th>";
+            s += "<th>Mobile</th>";
+            s += "<th>Email</th>";
+            s += "<th>AddOnCardName1</th>";
+            s += "<th>AddOnCardName2</th>";
+            s += "<th>AddOnCardName3</th>";
+            s += "<th>ParentStore</th>";
+            s += "<th>Status</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+            for (var i = 0; i < ar[1].length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[1][i]['memberid'] + "</td>";
+                s += "<td>" + ar[1][i]['name'] + "</td>";
+                  s += "<td>" + ar[1][i]['poc'] + "</td>";
+                    s += "<td>" + ar[1][i]['mobile'] + "</td>";
+                      s += "<td>" + ar[1][i]['email'] + "</td>";
+                        s += "<td>" + ar[1][i]['cardname1'] + "</td>";
+                               s += "<td>" + ar[1][i]['cardname2'] + "</td>";
+                                      s += "<td>" + ar[1][i]['cardname3'] + "</td>";
+                                             s += "<td>" + ar[1][i]['parentstore'] + "</td>";
+                                                    s += "<td>" + ar[1][i]['status'] + "</td>";
+
+                // s += "<td><a href=''><span class='glyphicon glyphicon-pencil'></span></a></td>";
+                // s += "<td class='text-center'><a href=''><img src='../static/edit.png' style='width:20px;height:20px;'></a></td>";
+                // s += "<td><a href='deletecategoryaction?cname="+ar[i]['cname']+"'><span class='glyphicon glyphicon-trash' style='color:red;'></span></a></td>";
+                s += "<td class='text-center'><a href='memberstatuschange?memberid=" + ar[1][i]['memberid'] + "&opr=disable'>Disable</a></td>";
+                s += "</tr>";
+            }
+
+            s += "</table>";
+            document.getElementById('output').innerHTML = s;
+        }
+    };
+    xml.open('GET', 'viewadminmembersaction?storeid='+storeid, true);
+    xml.send();
+}
+
+
+    </script>
+</head>
+{% include 'adminheader.html' %}
+<body >
+<div class="container">
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">Approve Members</h1>
+    </div>
+</div>
+
+
+ <div class="row">
+                <div class="form-group">
+                    <label>Select Store</label>
+                    <select  id="storeid" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Store" onchange="viewmembers(this.value)">
+                    <option value="">Choose</option>
+                        {% for p in mydata %}
+                            <option value="{{ p.storeid }}">{{ p.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+<div id="output"></div>
+</div>
+</body>
+</html>

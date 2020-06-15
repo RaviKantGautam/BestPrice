@@ -1,0 +1,129 @@
+{#<!DOCTYPE html>#}
+{#{% load static %}#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Title</title>#}
+{#</head>#}
+{#<body>#}
+{#{%  include 'memberheader.html' %}#}
+{#welcome {{ request.session.MEMBEREMAIL }}#}
+{#</body>#}
+{#</html>#}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop Now</title>
+    <script>
+        var selectedstoreid="";
+         function fetchproducts(storeid) {
+             selectedstoreid=storeid;
+   var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=JSON.parse(xml.response);
+                console.log(response);
+                 var ans="";
+                if(response.length==0){
+                    ans+="<h4>No product under this store select other store to continue shopping!!</h4>";
+                }
+                else{
+
+                for(var i=0;i<response.length;i++){
+                    var quantity="<select id=\"q"+i+"\">";
+for(var j=1;j<=10;j++){
+    quantity+="<option value=\""+j+"\">"+j+"</option>"
+}
+quantity+="</select>";
+                    console.log(response[i][0]);
+                     ans+="<div class=\"col-sm-4\">";
+                    ans+="<h3>"+response[i][1]+"</h3><br><img onclick=\"opendetail("+response[i][0]+")\" src=\"{%  static '/media/'%}"+response[i][7]+"\" width=\"200\" height=\"100\"><br><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"addtocart("+response[i][0]+","+i+","+storeid+")\">Add To Cart</button>";
+               var price=response[i][2];
+               var afterdiscount=response[i][3];
+               var netp=parseInt(response[i][2])-parseInt(response[i][3]);
+                    ans+="<br><h3>Rs."+afterdiscount+"&nbsp;&nbsp;<span style='color:red;text-decoration:line-through'>\n" +
+                        "  <span style='color:black'>"+price+"</span>\n" +
+                        "</span>&nbsp;save Rs. "+netp+"</h3>";
+                ans+="&nbsp;&nbsp;&nbsp;"+quantity;
+                    ans+="</div>";
+                }
+
+                }
+
+
+                document.getElementById('divproducts').innerHTML=ans;
+            }
+        };
+        xml.open('GET','viewproductsmember?storeid='+storeid,true);
+        xml.send();
+        }
+function opendetail(pid) {
+    window.location.href="productdetailpage?pid="+pid+"&storeid="+selectedstoreid;
+}
+
+        function filterproducts(value){
+             var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=JSON.parse(xml.response);
+                console.log(response);
+                var ans="";
+
+                for(var i=0;i<response.length;i++){
+                    console.log(response[i][0]);
+                      var quantity="<select id=\"q"+i+"\">";
+for(var j=1;j<=10;j++){
+    quantity+="<option value=\""+j+"\">"+j+"</option>"
+}
+quantity+="</select>";
+                     ans+="<div class=\"col-sm-3\">";
+                    ans+="<h3>"+response[i][1]+"</h3><br><img onclick=\"opendetail("+response[i][0]+")\" src=\"{%  static '/media/products/'%}"+response[i][6]+"\" width=\"200\" height=\"100\"><br><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"addtocart("+response[i][0]+","+i+")\">Add To Cart</button>";
+                 var sp=response[i][4];
+               var disc=response[i][5];
+               var netp=parseInt(response[i][4])-parseInt(response[i][5]);
+                    ans+="<br><h3>Rs."+netp+"&nbsp;&nbsp;<span style='color:red;text-decoration:line-through'>\n" +
+                        "  <span style='color:black'>"+sp+"</span>\n" +
+                        "</span>&nbsp;save Rs. "+disc+"</h3>";
+                    ans+="&nbsp;&nbsp;&nbsp;"+quantity;
+                ans+="</div>";
+                }
+                document.getElementById('divproducts').innerHTML=ans;
+            }
+        };
+        xml.open('GET','viewfilteredproducts?value='+value,true);
+        xml.send();
+        }
+
+        function addtocart(pid,id,storeid){
+var quantity=document.getElementById('q'+id).value;
+{#alert(pid+" "+quantity+selectedstoreid);#}
+   var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=xml.responseText.trim();
+                if(response=='success'){
+                    alert('added to cart successfully');
+                    window.location.reload();
+                }
+            }
+        };
+        xml.open('GET',"addtocart?pid="+pid+"&quantity="+quantity+"&storeid="+storeid,true);
+        xml.send();
+        }
+      function vieworders() {
+    window.location.href="vieworders";
+}
+    </script>
+</head>
+<body style="background-color:#c9f7f9">
+{% include 'memberheader.html' %}
+<div class="page-header text-center">
+    <h1></h1>
+</div>
+<div id="divproducts" style="margin: 10px;" class="row">
+<h2>Select Any Store To Continue Shopping</h2>
+</div>
+</body>
+</html>

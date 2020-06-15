@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function addstock() {
+    var productid = document.getElementById('productid').value;
+    var quantity = document.getElementById('quantity').value;
+    var storeid = document.getElementById('storeid').value;
+    var dateofexpiry = document.getElementById('dateofexpiry').value;
+    var dateofpurchase = document.getElementById('dateofpurchase').value;
+    if (productid==""){
+        alert('enter valid product id');
+    }
+    else if(quantity==""){
+        alert('enter quantity');
+    }
+    else{
+        var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+            document.getElementById('sp1').innerHTML = ar['message'];
+        }
+    };
+    xml.open('GET', 'addstockaction?productid=' + productid + '&quantity=' + quantity+'&storeid='+storeid+'&dateofexpiry='+dateofexpiry+'&dateofpurchase='+dateofpurchase, true);
+    xml.send();
+    }
+
+}
+    </script>
+</head>
+<body>
+{% include 'storeheader.html' %}
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">Add Stock</h1>
+        <div class="row">
+            <div class="form-group">
+                <label>Enter Product ID</label>
+                <input type="text" id="productid" placeholder="enter productid" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Enter Quantity</label>
+                <input type="number" id="quantity" placeholder="enter quantity" class="form-control" required>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Store ID</label>
+                <input type="text" value="{{ request.session.STOREID }}" id="storeid" class="form-control" readonly>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Choose Date Of Purchase(optional)</label>
+                <input type="date" id="dateofpurchase" class="form-control" required>
+            </div>
+        </div>
+         <div class="row">
+            <div class="form-group">
+                <label>Choose Expiry Date(optional)</label>
+                <input type="date" id="dateofexpiry" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <input type="button" class="btn btn-success" onclick="addstock()" value="SUBMIT">
+            </div>
+        </div>
+        <span id="sp1"></span>
+    </div>
+</div>
+</body>
+</html>

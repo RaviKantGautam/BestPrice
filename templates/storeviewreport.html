@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function fetchorders() {
+
+                   var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=JSON.parse(xml.response);
+                if(response.length==0){
+                   document.getElementById('divorders').innerHTML="<h4>No any order placed using this mobile  number</h4>";
+                }
+                else{
+                     console.log(response);
+                var ans="";
+                ans+="<table class=\"table table-bordered table-hover\"><tr><td>Serial No</td><td>Orderid</td><td>DateofOrder</td><td>ModeOfBill</td><td>TotalBill</td><td>MemberId</td><td>ModeOfPayment</td><td>View Order Detail</td></tr>";
+                for(var i=0;i<response.length;i++){
+                    console.log(response[i][0]);
+                    ans+="<tr><td>"+(i+1)+"</td><td>"+response[i][0]+"</td><td>"+response[i][1]+"</td><td>"+response[i][2]+"</td><td>Rs. "+response[i][3]+"</td><td>"+response[i][4]+"</td><td>"+response[i][6]+"</td><td><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"orderdetail("+response[i][0]+")\">Detail</button></td></tr>";
+                }
+                ans+="</table>";
+                document.getElementById('divorders').innerHTML=ans;
+                }
+
+            }
+        };
+        xml.open('GET',"fetchordersstore",true);
+        xml.send();
+
+        }
+        function orderdetail(oid){
+            window.location.href='orderdetailstore?orderid='+oid;
+        }
+          function vieworders() {
+    window.location.href="viewreportstore";
+}
+    </script>
+</head>
+<body onload="fetchorders()">
+{%  include 'storeheader.html' %}
+<div class="page-header text-center">
+    <h1>ORDERS</h1>
+</div>
+
+
+
+<div id="divorders" style="margin: 10px;">
+
+</div>
+</body>
+</html>

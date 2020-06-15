@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static 'css/bootstrap.css' %}" type="text/css" rel="stylesheet">
+    <script>
+        function storelogin()
+{
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    if(email.indexOf('@')==-1||email.lastIndexOf('.')<email.indexOf('@')){
+                      alert('email is either empty or invalid ');
+    }
+     else if(password==""){
+                      alert('enter password');
+    }
+      else{
+        var formdata = new FormData();
+    formdata.append('email',email);
+    formdata.append('password',password);
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if(this.readyState==4 && this.status==200)
+        {
+            var ar = JSON.parse(this.response);
+            if(ar['message']=='Login Success')
+            {
+                window.location.href = "storehomepage";
+            }
+            else {
+                  alert('invalid email/password');
+            }
+        }
+    };
+    xml.open('POST','storeloginaction',true);
+    xml.send(formdata);
+    }
+
+}
+
+function forgetpass() {
+            var mobile=prompt('enter registered mobile no');
+            if(mobile==""||mobile.length!=10){
+                alert('enter registered 10 digit mobile no');
+            }
+            else{
+                var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if(this.readyState==4 && this.status==200)
+        {
+            var ar = this.response.trim();
+            if(ar=='success')
+            {
+                alert('password sent on registered mobile');
+            }
+            else {
+                alert('store with this mobile no not exist');
+            }
+        }
+    };
+    xml.open('GET','sendpassstore?mobile='+mobile,true);
+    xml.send();
+            }
+
+}
+    </script>
+</head>
+<body style="background-image: url({% static '/media/storeimage.jpg' %});background-repeat: no-repeat; background-size: cover">
+<div class="container">
+    <div class="page-header text-center">
+        <h1 style="color: black">STORE LOGIN</h1>
+    </div>
+    <form action="#" >
+        <div class="form-group">
+            <label style="color: black">Enter Email</label>
+            <input type="email" id="email" placeholder="Enter Email" title="enter email" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label style="color: black">Enter Password</label>
+            <input type="password" id="password" placeholder="Enter Password" title="enter password" required class="form-control">
+        </div>
+        <div class="form-group">
+            <input type="button" onclick="storelogin()" class="btn btn-info"  style="background-color: white;color: black" value="LOGIN"><br><br>
+               <button class="btn btn-danger" onclick="forgetpass()">Forget Password</button><br><br>
+        </div>
+    </form>
+    {{ message }}
+</div>
+</body>
+</html>

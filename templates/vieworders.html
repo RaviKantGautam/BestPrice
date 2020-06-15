@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function fetchorders() {
+
+                   var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=JSON.parse(xml.response);
+                if(response.length==0){
+                   document.getElementById('divorders').innerHTML="<h4>No any order placed using this mobile  number</h4>";
+                }
+                else{
+                     console.log(response);
+                var ans="";
+                ans+="<table class=\"table table-bordered table-hover\"><tr><td>Serial No</td><td>Orderid</td><td>DateofOrder</td><td>ModeOfBill</td><td>TotalBill</td><td>StoreId</td><td>ModeOfPayment</td><td>View Order Detail</td></tr>";
+                for(var i=0;i<response.length;i++){
+                    console.log(response[i][0]);
+                    ans+="<tr><td>"+(i+1)+"</td><td>"+response[i][0]+"</td><td>"+response[i][1]+"</td><td>"+response[i][2]+"</td><td>Rs. "+response[i][3]+"</td><td>"+response[i][5]+"</td><td>"+response[i][6]+"</td><td><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"orderdetail("+response[i][0]+")\">Detail</button></td></tr>";
+                }
+                ans+="</table>";
+                document.getElementById('divorders').innerHTML=ans;
+                }
+
+            }
+        };
+        xml.open('GET',"fetchorders",true);
+        xml.send();
+
+        }
+        function orderdetail(oid){
+            window.location.href='orderdetail?orderid='+oid;
+        }
+          function vieworders() {
+    window.location.href="vieworders";
+}
+    </script>
+</head>
+<body onload="fetchorders()">
+{%  include 'memberheader.html' %}
+<div class="page-header text-center">
+    <h1>ORDERS</h1>
+</div>
+
+{#        <form style="width: 50%;margin-left: 10px;" class="form-inline text-center">#}
+{#            <div class="form-group">#}
+{#            <label>Enter Mobile No</label>#}
+{#             <input type="text" placeholder="enter mobile number" title="enter mobile number" id="mobileno" class="form-control">#}
+{#        </div>#}
+{#              <div class="form-group">#}
+{#             <input style="margin-left: 5px;" type="button" value="Fetch" onclick="fetchorders()" class="btn btn-success">#}
+{#        </div>#}
+{#        </form>#}
+
+<div id="divorders" style="margin: 10px;">
+
+</div>
+</body>
+</html>

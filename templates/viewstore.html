@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function viewstore() {
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+            var s = "";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Store Id</th>";
+            s += "<th>Title</th>";
+             s += "<th>Email</th>";
+              s += "<th>Password</th>";
+               s += "<th>Location</th>";
+                s += "<th>Mobile Number</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+            for (var i = 0; i < ar.length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[i]['storeid'] + "</td>";
+                s += "<td>" + ar[i]['title'] + "</td>";
+                s += "<td>" + ar[i]['email'] + "</td>";
+                s += "<td>" + ar[i]['password'] + "</td>";
+                s += "<td>" + ar[i]['location'] + "</td>";
+                s += "<td>" + ar[i]['mobile'] + "</td>";
+                // s += "<td><a href=''><span class='glyphicon glyphicon-pencil'></span></a></td>";
+                 s += "<td class='text-center'><a href='openeditstore?storeid="+ar[i]['storeid']+"'><img src='../static/edit.png' style='width:20px;height:20px;'></a></td>";
+                // s += "<td><a href='deletecategoryaction?cname="+ar[i]['cname']+"'><span class='glyphicon glyphicon-trash' style='color:red;'></span></a></td>";
+                s += "<td class='text-center'><a href='deletestoreaction?storeid=" + ar[i]['storeid'] + "'><img src='../static/delete.png' style='width:20px;height:20px;'></a></td>";
+                s += "</tr>";
+            }
+
+            s += "</table>";
+            document.getElementById('output').innerHTML = s;
+        }
+    };
+    xml.open('GET', 'viewstoreaction', true);
+    xml.send();
+}
+    </script>
+</head>
+{% include 'adminheader.html' %}
+<body onload="viewstore()">
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">View Category</h1>
+        <div id="output"></div>
+    </div>
+</div>
+</body>
+</html>

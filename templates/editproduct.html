@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Products</title>
+<script>
+    function editproduct(){
+        var formdata=new FormData();
+        var controls=document.getElementById('form1').elements;
+        var count=0;
+        for(var i=0;i<controls.length;i++){
+            if(controls[i].name=="" || controls[i].name==null){
+                count=1;
+            }
+
+            {#alert(controls[i].type+" "+controls[i].name+" "+controls[i].value);#}
+            if(controls[i].type=='file'){
+                  formdata.append(controls[i].name,controls[i].files[0]);
+            }
+            else{
+                  formdata.append(controls[i].name,controls[i].value);
+            }
+        }
+        if(count==1){
+            alert('give name to all controls');
+        }
+
+        else{
+            var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=xml.responseText.trim();
+                if(response=="success"){
+                    alert('product updated  successfully');
+                    window.location.href='openviewproducts';
+                }
+            }
+        };
+        xml.open('POST','editproduct',true);
+        xml.send(formdata);
+        }
+
+
+    }
+
+    function changephoto(){
+        document.getElementById('hidden').value="file";
+        var ans=" <label>Choose Photo</label>\n" +
+            "            <input type=\"file\" name=\"photo\" class=\"form-control\">";
+        document.getElementById('divphoto').innerHTML=ans;
+    }
+</script>
+</head>
+<body>
+{%  include 'adminheader.html' %}
+<div class="container">
+    <div class="page-header text-center">
+        <h1>EDIT PRODUCTS</h1>
+    </div>
+
+    <form id="form1">
+ <div class="row">
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <select name="categoryname" id="categoryname" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Category">
+                    <option value="">Choose</option>
+                        {% for p in mydata.0 %}
+                            <option {% if mydata.1.0.cname == p.categoryname  %} selected {% endif %} value="{{ p.categoryname }}">{{ p.categoryname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+    <div class="row">
+                <div class="form-group">
+                    <label>Prodcut Id</label>
+                    <input type="text" value="{{ mydata.1.0.productid }}" name="productid" id="productid" class="form-control" readonly>
+                </div>
+            </div>
+<div class="row">
+                <div class="form-group">
+                    <label>Enter Product Name</label>
+                    <input type="text" value="{{ mydata.1.0.productname }}" name="pname" id="pname" class="form-control" data-rule-required="true"
+                           data-msg-required="Please Enter Product Name">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Price</label>
+                    <input type="number" value="{{ mydata.1.0.price }}" name="price" id="price" class="form-control" data-rule-required="true"
+                           data-msg-required="Please Enter Price">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Price After Dicount</label>
+                    <input type="number" value="{{ mydata.1.0.priceafterdiscount }}" name="mrp" id="mrp" class="form-control" data-rule-required="true"
+                           data-msg-required="Please Enter MRP">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Description</label>
+                    <input type="text" name="description" value="{{ mydata.1.0.description }}" id="description" class="form-control" data-rule-required="true"
+                              data-msg-required="Please Enter Description">
+                </div>
+            </div>
+         <div class="row">
+                <div class="form-group">
+                    <label>Select Brand</label>
+                    <select name="brand" id="brand" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Brand">
+                    <option value="">Choose</option>
+                        <option {% if mydata.1.0.brand == 'nike'  %} selected {% endif %} value="nike">nike</option>
+                        <option {% if mydata.1.0.brand == 'puma'  %} selected {% endif %} value="puma">puma</option>
+                        <option {% if mydata.1.0.brand == 'adidas'  %} selected {% endif %} value="adidas">adidas</option>
+                     <option {% if mydata.1.0.brand == 'other'  %} selected {% endif %} value="other">adidas</option>
+                    </select>
+                </div>
+            </div>
+    <input type="hidden" id="hidden" name="hidden" value="nofile">
+    <div class="form-group" id="divphoto">
+
+         <img name='img1' src="{% static '/media/' %}{{ mydata.1.0.productphoto }}" width="100" height="100">
+       <button name="btnchange" class="btn btn-danger" onclick="changephoto()"> Change</button>
+        </div>
+        <div class="form-group">
+            <input type="button" name="btn" class="btn btn-success" value="Update" onclick="editproduct()">
+        </div>
+    </form>
+    {{ message }}
+</div>
+</body>
+</html>

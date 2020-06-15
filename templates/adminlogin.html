@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static 'css/bootstrap.css' %}" type="text/css" rel="stylesheet">
+
+    <script>
+        function forgetpass() {
+            var mobile=prompt('enter registered mobile no');
+            if(mobile==""||mobile.length!=10){
+                alert('enter registered 10 digit mobile no');
+            }
+            else{
+                var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if(this.readyState==4 && this.status==200)
+        {
+            var ar = this.response.trim();
+            if(ar=='success')
+            {
+                alert('password sent on registered mobile');
+            }
+            else {
+                alert('member with this mobile no not exist');
+            }
+        }
+    };
+    xml.open('GET','sendpassadmin?mobile='+mobile,true);
+    xml.send();
+            }
+
+}
+    </script>
+</head>
+<body style="background-image: url({% static '/media/adminback.jpg' %});background-repeat: no-repeat; background-size: cover">
+<div class="container">
+    <div class="page-header text-center">
+        <h1 style="color: black">ADMIN LOGIN</h1>
+    </div>
+    <form action="checkadminlogin" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label style="color: black">Enter Email</label>
+            <input type="email" name="email" placeholder="Enter Email" title="enter email" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label style="color: black">Enter Password</label>
+            <input type="password" name="password" placeholder="Enter Password" title="enter password" required class="form-control">
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-info" style="background-color: white;color: black" value="LOGIN"><br><br>
+               <button class="btn btn-danger" onclick="forgetpass()">Forget Password</button><br><br>
+        </div>
+    </form>
+    {{ message }}
+</div>
+</body>
+</html>

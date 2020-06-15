@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var memberid="";
+        function verifymember() {
+           memberid=document.getElementById('memberid').value;
+            if(memberid==""){
+                alert('enter member id');
+            }
+            else{
+                 var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = this.response.trim();
+            if(ar=='success'){
+                document.getElementById('memberid').setAttribute('readonly',true);
+                document.getElementById('btnv').style.display='none';
+ document.getElementById('divadd').style.display='block';
+            }
+            else{
+                alert('invalid member id');
+            }
+        }
+    };
+    xml.open('GET', 'verifymember?memberid='+memberid, true);
+    xml.send();
+            }
+        }
+        var index=0;
+        var totalstring=new Array();
+        var pricestring=new Array();
+        var pidstring=new Array();
+        var qtystring=new Array();
+        var namesstring=new Array();
+        var padstring=new Array();
+        var photostring=new Array();
+        var overallsum=0;
+        function add() {
+            var pid=document.getElementById('pid').value;
+            var qty=document.getElementById('qty').value;
+            if(pid==""){
+                alert('enter product id');
+            }
+            else if(qty==""){
+                alert('choose quantity');
+            }
+            else{
+                          var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+                   var ar = JSON.parse(this.response);
+            var s = "";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Product ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>Quantity</th>";
+            s += "<th>Price</th>";
+            s += "<th>Price After Discount</th>";
+            s += "<th>Total Price</th>";
+            s += "<th colspan='2'>Controls</th>";
+            console.log(ar[7]);
+            totalstring[index]=ar[5];
+            pricestring[index]=ar[3];
+            pidstring[index]=ar[0];
+            qtystring[index]=ar[2];
+            namesstring[index]=ar[1];
+            padstring[index]=ar[4];
+              photostring[index]=ar[6];
+              overallsum=0;
+            for (var i = 0; i <=index; i++) {
+                if(pidstring[i] ==""){
+
+                }
+                else{
+                       s += "<tr>";
+                s += "<td>" + pidstring[i] + "</td>";
+                s += "<td>" + namesstring[i] + "</td>";
+                s += "<td>" + qtystring[i] + "</td>";
+                s += "<td>" + pricestring[i] + "</td>";
+                s += "<td>" + padstring[i] + "</td>";
+                s += "<td>" + totalstring[i] + "</td>";
+                s += "<td><img src='../static/media/" +  photostring[i] + "' style='width:70px;height:60px;'></td>";
+               s+="<td><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"deleteproduct("+index+")\">Delete<button></td>";
+                s += "</tr>";
+                overallsum=overallsum+totalstring[i];
+                }
+
+            }
+index=index+1;
+            s += "</table>";
+            document.getElementById('divproducts').innerHTML ="<button style=\"margin:2px;\"  class=\"btn btn-success\" onclick=\"sellstock()\">Sell<button>&nbsp;<h4>Total Bill Rs. "+overallsum+"</h4>"+ s;
+            }
+
+    };
+    xml.open('GET', 'verifyproduct?pid='+pid+"&qty="+qty, true);
+    xml.send();
+            }
+        }
+
+        function deleteproduct(i) {
+            totalstring[i]="";
+            pricestring[i]="";
+            pidstring[i]="";
+            qtystring[i]="";
+            namesstring[i]="";
+            padstring[i]="";
+              photostring[i]="";
+               var s = "";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Product ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>Quantity</th>";
+            s += "<th>Price</th>";
+            s += "<th>Price After Discount</th>";
+            s += "<th>Total Price</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+              overallsum=0;
+            for (var i = 0; i <index; i++) {
+                if(pidstring[i] ==""){
+
+                }
+                else{
+                       s += "<tr>";
+                s += "<td>" + pidstring[i] + "</td>";
+                s += "<td>" + namesstring[i] + "</td>";
+                s += "<td>" + qtystring[i] + "</td>";
+                s += "<td>" + pricestring[i] + "</td>";
+                s += "<td>" + padstring[i] + "</td>";
+                s += "<td>" + totalstring[i] + "</td>";
+                s += "<td><img src='../static/media/" +  photostring[i] + "' style='width:70px;height:60px;'></td>";
+               s+="<td><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"deleteproduct("+index+")\">Delete<button></td>";
+                s += "</tr>";
+                overallsum=overallsum+totalstring[i];
+                }
+
+            }
+            s += "</table>";
+            document.getElementById('divproducts').innerHTML ="<button style=\"margin:2px;\"  class=\"btn btn-success\" onclick=\"sellstock()\">Sell<button>&nbsp;<h4>Total Bill Rs. "+overallsum+"</h4>"+ s;
+
+        }
+
+        function sellstock() {
+            alert(totalstring+" "+pricestring+" "+pidstring+" "+qtystring+" "+namesstring+" "+padstring+" "+photostring);
+            console.log(totalstring);
+                  var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = this.response.trim();
+            if(ar=='success'){
+                alert('stock sold successfully');
+                window.location.reload();
+
+            }
+            else{
+                alert('');
+            }
+        }
+    };
+    xml.open('GET', 'sellstock?pricestring='+padstring.toString()+"&pidstring="+pidstring.toString()+"&qtystring="+qtystring.toString()+"&totalbill="+overallsum+"&memberid="+memberid, true);
+    xml.send();
+        }
+        function hide() {
+            document.getElementById('divadd').style.display='none';
+        }
+    </script>
+</head>
+<body onload="hide()">
+{%  include 'storeheader.html' %}
+<div class="container">
+    <div class="page-header">
+        <h2>Sell Stock</h2>
+    </div>
+    <div class="row">
+
+     <div class="col-sm-6">
+           <div class="form-group">
+            <label >Enter Registered Member ID</label>
+        <form action="#" class="form-inline">
+            <input type="text" id="memberid" placeholder="Enter Registered Member ID" title="enter member id" required class="form-control">&nbsp;
+        <input type="button" class="btn-success" id="btnv" onclick="verifymember()" value="verify">
+            </form>
+        </div>
+         <div id="divadd">
+                    <div class="form-group">
+        <label>Enter Product ID</label>
+        <input type="text" id="pid"  placeholder="enter product id" required class="form-control">
+    </div>
+    <div class="form-group">
+         <label>Choose Quantity</label>
+         <select  id="qty" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Quantity">
+                    <option value="">Choose Quantity</option>
+                        <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+                    </select>
+    </div>
+             <div class="form-group">
+                 <button onclick="add()" class="btn btn-success">ADD</button>
+             </div>
+         </div>
+
+        </div>
+
+        <div class="col-sm-6" id="divproducts">
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

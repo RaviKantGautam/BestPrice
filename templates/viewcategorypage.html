@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function viewcategory() {
+    var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+            var s = "";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Category Name</th>";
+            s += "<th>Description</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+            for (var i = 0; i < ar.length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[i]['cname'] + "</td>";
+                s += "<td>" + ar[i]['description'] + "</td>";
+                // s += "<td><a href=''><span class='glyphicon glyphicon-pencil'></span></a></td>";
+                // s += "<td class='text-center'><a href=''><img src='../static/edit.png' style='width:20px;height:20px;'></a></td>";
+                // s += "<td><a href='deletecategoryaction?cname="+ar[i]['cname']+"'><span class='glyphicon glyphicon-trash' style='color:red;'></span></a></td>";
+                s += "<td class='text-center'><a href='deletecategoryaction?cname=" + ar[i]['cname'] + "'><img src='../static/delete.png' style='width:20px;height:20px;'></a></td>";
+                s += "</tr>";
+            }
+
+            s += "</table>";
+            document.getElementById('output').innerHTML = s;
+        }
+    };
+    xml.open('GET', 'viewcategoryaction', true);
+    xml.send();
+}
+    </script>
+</head>
+{% include 'adminheader.html' %}
+<body onload="viewcategory()">
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">View Category</h1>
+        <div id="output"></div>
+    </div>
+</div>
+</body>
+</html>

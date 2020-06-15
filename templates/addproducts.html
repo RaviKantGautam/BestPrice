@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Products</title>
+<script>
+{#   function addproduct() {#}
+    {#if ($('#frm_addproduct').valid()) {#}
+{##}
+{#        var formdata = new FormData();#}
+{#        formdata.append('categoryname', document.getElementById('categoryname').value);#}
+{#        formdata.append('pname', document.getElementById('pname').value);#}
+{#        formdata.append('price', document.getElementById('price').value);#}
+{#        formdata.append('mrp', document.getElementById('mrp').value);#}
+{#          formdata.append('brand', document.getElementById('brand').value);#}
+{#        formdata.append('description', document.getElementById('description').value);#}
+{#        formdata.append('photo', document.getElementById('photo').files[0]);#}
+{#        #}
+{#        var xml = new XMLHttpRequest();#}
+{#        xml.onreadystatechange = function () {#}
+{#            if (this.readyState == 4 && this.status == 200) {#}
+{#                var ar = JSON.parse(this.response);#}
+{#                document.getElementById('sp1').innerHTML = ar['message'];#}
+{#            }#}
+{#        };#}
+{#        xml.open('POST', 'addproduct', true);#}
+{#        xml.send(formdata);#}
+    {#}#}
+{#}#}
+
+</script>
+</head>
+<body>
+{%  include 'adminheader.html' %}
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center">Add Product</h1><h4 style="color: green">{{ message }}</h4>
+        <form action="addproduct" id="frm_addproduct" method="post" enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <select name="categoryname" id="categoryname" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Category"required >
+                    <option value="">Choose</option>
+                        {% for p in mydata %}
+                            <option value="{{ p.categoryname }}">{{ p.categoryname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Product Name</label>
+                    <input type="text" name="pname" id="pname" class="form-control" data-rule-required="true"
+                           data-msg-required="Please Enter Product Name" placeholder="Enter Product Name" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Price</label>
+                    <input type="number" name="price" placeholder="enter price in numeric" id="price" class="form-control" data-rule-required="true"
+                           data-msg-required="Please Enter Price" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Price After Dicount</label>
+                    <input type="number" name="mrp" id="mrp" class="form-control" data-rule-required="true" placeholder="Please Enter MRP in numeric"
+                           data-msg-required="Please Enter MRP in numeric" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Enter Description</label>
+                    <textarea name="description" id="description" class="form-control" data-rule-required="true"
+                              data-msg-required="Please Enter Description" required></textarea>
+                </div>
+            </div>
+         <div class="row">
+                <div class="form-group">
+                    <label>Select Brand</label>
+                    <select name="brand" id="brand" class="form-control" data-rule-required="true"
+                            data-msg-required="Please Select Brand" required>
+                    <option value="">Choose</option>
+                        <option value="nike">nike</option>
+                        <option value="puma">puma</option>
+                        <option value="adidas">adidas</option>
+                        <option value="other">other</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Select Photo</label>
+                    <input type="file" name="photo" id="photo" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success" onclick="addproduct()" value="SUBMIT">
+                </div>
+            </div>
+            <span id="sp1"></span>
+        </form>
+    </div>
+</div>
+</body>
+</html>

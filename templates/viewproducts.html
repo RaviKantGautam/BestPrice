@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+
+        function fetchproducts() {
+ var xml = new XMLHttpRequest();
+    xml.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var ar = JSON.parse(this.response);
+            var s = "";
+            s += "<table class='table table-bordered'>";
+            s += "<th>Product ID</th>";
+            s += "<th>Product Name</th>";
+            s += "<th>Price</th>";
+            s += "<th>Price After Discount</th>";
+            s += "<th>Description</th>";
+            s += "<th>Brand</th>";
+            s += "<th>Category</th>";
+            s += "<th>Photo</th>";
+            s += "<th colspan='2'>Controls</th>";
+
+            for (var i = 0; i < ar.length; i++) {
+                s += "<tr>";
+                s += "<td>" + ar[i][0] + "</td>";
+                s += "<td>" + ar[i][1] + "</td>";
+                s += "<td>" + ar[i][2] + "</td>";
+                s += "<td>" + ar[i][3] + "</td>";
+                s += "<td>" + ar[i][4] + "</td>";
+                s += "<td>" + ar[i][5] + "</td>";
+                s += "<td>" + ar[i][6] + "</td>";
+                s += "<td><img src='../static/media/" + ar[i][7] + "' style='width:70px;height:60px;'></td>";
+               s+="<td><button class=\"btn btn-success\" onclick=\"editproduct("+ar[i][0]+")\">Edit<button><br><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"deleteproduct("+ar[i][0]+")\">Delete<button></td><td><button style=\"margin-top:5px;\" class=\"btn btn-danger\" onclick=\"managephotos("+ar[i][0]+")\">Manage</button></td>";
+                s += "</tr>";
+            }
+
+            s += "</table>";
+            document.getElementById('divproducts').innerHTML = s;
+        }
+    };
+        xml.open('GET','viewproducts',true);
+        xml.send();
+        }
+
+        function deleteproduct(pid){
+            var result=confirm('Are you sure want to delete?');
+            if(result==true){
+   var xml=new XMLHttpRequest();
+        xml.onreadystatechange=function () {
+            if(xml.readyState==4 && xml.status==200){
+                var response=xml.responseText.trim();
+                if(response=='success'){
+                    fetchproducts();
+                }
+            }
+        };
+        xml.open('GET','deleteproduct?pid='+pid,true);
+        xml.send();
+            }
+
+
+        }
+        function editproduct(pid){
+            window.location.href='gotoeditproductpage?pid='+pid;
+        }
+function managephotos(pid){
+             window.location.href='manageproductphotos?pid='+pid;
+}
+    </script>
+</head>
+<body onload="fetchproducts()">
+{%  include 'adminheader.html' %}
+<div class="page-header text-center">
+    <h1>MANAGE PRODUCTS</h1>
+</div>
+<div id="divproducts">
+
+</div>
+</body>
+</html>
